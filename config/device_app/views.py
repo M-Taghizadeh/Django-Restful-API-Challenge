@@ -15,7 +15,7 @@ dynamodb = boto3.resource(
     aws_secret_access_key = os.getenv("AWS_ACCESS_KEY_ID"),
     region_name = os.getenv("AWS_REGION_NAME"),
 )
-table = dynamodb.Table("DevicesDB")
+table = dynamodb.Table("Device_DB")
 
 
 class CreateDevice_API(APIView):
