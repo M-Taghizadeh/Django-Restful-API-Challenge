@@ -10,7 +10,7 @@ class Devices(DynaModel):
         write = 5
 
     class Schema:
-        id = fields.Integer()
+        id = fields.String()
         deviceModel = fields.String()
         name = fields.String()
         note = fields.String()
