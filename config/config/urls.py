@@ -18,7 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    
     # Added Urls
     path("api/v1/", include("device_app.urls"))
 ]
