@@ -20,5 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Added Urls
-    path("api/v1/", include("devices.urls"))
+    path("api/v1/", include("device_app.urls"))
 ]
