@@ -1,3 +1,4 @@
+import boto
 import boto3
 from .serializers import DeviceSerializer
 from rest_framework import status
@@ -28,11 +29,17 @@ class CreateDevice_API(APIView):
         
         if serializer.is_valid():
             data = serializer.validated_data
+            device = table.get_item(Key={"id": data.get("id"),})
+            
+            if "Item" in device:  
+                return Response(status=status.HTTP_409_CONFLICT, data={'message': f'Item already exists with this id: {data.get("id")}.'})
+
+            # Save Device
             table.put_item(Item=data)
             # new_device = Devices(deviceModel=data.get("deviceModel"), name=data.get("name"), note=data.get("note"), serial=data.get("serial"), )
             # new_device.save()
-
-            return Response(status=status.HTTP_201_CREATED, data={"'message': 'Item created successfully.'"})
+            
+            return Response(status=status.HTTP_201_CREATED, data={'message': 'Item created successfully.'})
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
@@ -52,4 +59,15 @@ class GetDevice_API(APIView):
             serializer = DeviceSerializer(device["Item"])
             return Response(status=status.HTTP_200_OK, data=serializer.data)
         else:
-            return Response(status=status.HTTP_404_NOT_FOUND, data={"'message': 'This item does not exist.'"})
+            return Response(status=status.HTTP_404_NOT_FOUND, data={'message': 'This item does not exist.'})
+
+
+class Get_All_Devices_API(APIView):
+    "With this API, we can get all the information of all Devices in DeviceDB table"
+
+    def get(self, request):
+        devices = table.scan()
+
+        if devices:
+            return Response(status=status.HTTP_200_OK, data=devices)
+        return Response(status=status.HTTP_200_OK, data={'message': 'There is no device available.'})
