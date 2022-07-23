@@ -1,4 +1,3 @@
-import boto
 import boto3
 from .serializers import DeviceSerializer
 from rest_framework import status
