@@ -21,10 +21,15 @@ Implement a simple Restful API on Django using the following tech stack: Python,
 ```bash
 >>> python -m venv venv
 >>> venv\Scripts\activate
-# On Linux:
+```
+
+On Linux
+```bash
 $ python -m venv venv
 $ . venv/bin/activate
+```
 
+```bash
 >>> cd .\config\
 >>> pip install -r requirements.txt
 ```
@@ -33,18 +38,23 @@ $ . venv/bin/activate
 - Download AWS Cli from [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and install it.
 
 - on aws cli terminal:
+
 ```bash
 >>> aws configure
 ```
+
 - Enter your IAM informations:
+
 ```bash
-$ AWS Access Key ID [None]: MYACCESSKEY
-$ AWS Secret Access Key [None]: MYSECRETKEY
-$ Default region name [None]: MYREGION
+$ AWS Access Key ID [None]: ENTER YOUR ACCESSKEY
+$ AWS Secret Access Key [None]: ENTER YOUR SECRETKEY
+$ Default region name [None]: ENTER YOUR REGION
 $ Default output format [None]: json
 ```
 
 ### 4. Aws DynamoDB
+
+**You can Skip this section if the table already exists in dynmaoDB**
 
 After entering the AWS Secret variables, we can use dynamodb migrator to create our nosql database.
 
@@ -60,12 +70,14 @@ You can see it in the list of tables.
 
 ### 5. Enter Your secret variables
 - in settings.py : config/config/settings.py
+
 ```python
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("YOUR_DJANGO_SECRET_KEY")
 ```
 
 - in device_app/api/views.py
+
 ```python
 # Get the dynamodb using boto3
 dynamodb = boto3.resource(
@@ -78,36 +90,12 @@ dynamodb = boto3.resource(
 
 ### 6. Run server and use it :)
 ```bash
+>>> cd .\config
 >>> python .\manage.py runserver
 ```
 
 
 # Results and Tests
-## Tests
-This project is completely TestCase oriented and you can add other tests in the device_app/tests.py file. the six important and key test cases requested in the challenge have been successfully passed. You can test it with the following command.
-
-- Tests Directory
-
-```
-.\config\device_app\tests.py
-```
-
-```bash
->>> cd .\config
->>> python .\manage.py test   
-```
-
-- Tests Outpus
-
-```bash
-Found 6 test(s).
-System check identified no issues (0 silenced).
-......
-----------------------------------------------------------------------
-Ran 6 tests in 2.456s
-
-OK
-```
 
 ## Results
 |HTTP Method |URL                                                                  |Functionality
@@ -186,6 +174,104 @@ If the request id does not exist.
 - **HTTP 200** OK
 
 ![test](docs/GET-ALL-200.png)
+
+
+<hr>
+
+## Automated Tests
+This project is completely TestCase oriented and you can add other tests in the device_app/tests.py file. the six important and key test cases requested in the challenge have been successfully passed. You can use these endpoints with API platforms like **postman** or **insomnia**. You can also run test cases with the following command.
+
+- Tests Directory
+
+```bash
+.\config\device_app\tests.py
+```
+
+- you can see the tests and add your test cases in this file
+
+```python
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APISimpleTestCase
+
+
+client = APIClient()
+
+class TestGetDevice_API(APISimpleTestCase):
+    """Test class for GetDevice_API endpoint view"""
+
+    def test_case1_get_device_valid(self):
+        response = client.get("http://127.0.0.1:8000/api/v1/devices/id1/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_case2_get_device_invalid(self):
+        response = client.get("http://127.0.0.1:8000/api/v1/devices/id567/")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class Test_CreateDevice_API(APISimpleTestCase):
+    """Test class for create a new Device using CreateDevice_API endpoint view"""
+
+    def setUp(self):
+        self.payload1_valid = {
+            "id": "/devices/id5",
+            "deviceModel": "/devicemodels/id5",
+            "name": "Sensor5",
+            "note": "Testing a sensor5.",
+            "serial": "A020000105",
+        }
+
+        self.payload2_invalid = {
+            "id": "", # id required field
+            "deviceModel": "/devicemodels/id2",
+            "name": "", # name required field
+            "note": "Testing a sensor2.", 
+            # serial required field
+        }
+
+        self.payload3_invalid = {
+            "id": "4", # id format is invalid : must be in this format => /devices/id<pk>
+            "deviceModel": "/devicemodels/id4",
+            "name": "Sensor4",
+            "note": "Testing a sensor4.",
+            "serial": "A020000104",
+        }
+
+    def test_case1_create_device_valid(self):
+        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_case2_create_device_invalid(self):
+        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload2_invalid)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_case3_create_device_invalid(self):
+        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload3_invalid)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_case4_create_device_invalide(self):
+        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT) # item already exist
+```
+
+- run the tests
+
+```bash
+>>> cd .\config
+>>> python .\manage.py test   
+```
+
+- Tests Outputs
+
+```bash
+Found 6 test(s).
+System check identified no issues (0 silenced).
+......
+----------------------------------------------------------------------
+Ran 6 tests in 2.456s
+
+OK
+```
 
 <hr>
 
