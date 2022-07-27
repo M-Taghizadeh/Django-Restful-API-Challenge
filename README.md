@@ -5,7 +5,7 @@ Implement a simple Restful API on Django using the following tech stack: Python,
 
 ## Getting Started
 - [How to run this project?](#how-to-run-this-project)
-- [Results and TestCases](#results-and-tests)
+- [Results and Test Cases](#results-and-tests)
 - [Deploy on AWS Lambda func by zappa](#deploy-on-aws-lambda)
 
 
@@ -86,12 +86,19 @@ dynamodb = boto3.resource(
 ## Tests
 This project is completely TestCase oriented and you can add other tests in the device_app/tests.py file. the six important and key test cases requested in the challenge have been successfully passed. You can test it with the following command.
 
+- Tests Directory
+
+```
+.\config\device_app\tests.py
+```
+
 ```bash
 >>> cd .\config
 >>> python .\manage.py test   
 ```
 
 - Tests Outpus
+
 ```bash
 Found 6 test(s).
 System check identified no issues (0 silenced).
