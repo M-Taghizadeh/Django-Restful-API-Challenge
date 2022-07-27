@@ -74,6 +74,8 @@ You can see it in the list of tables.
 ### 5. Enter Your secret variables
 - in settings.py : config/config/settings.py
 
+You can also use online tools for django secret key generator.
+
 ```python
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("YOUR_DJANGO_SECRET_KEY")
