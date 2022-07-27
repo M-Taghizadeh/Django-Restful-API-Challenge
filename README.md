@@ -18,6 +18,9 @@ Implement a simple Restful API on Django using the following tech stack: Python,
 ```
 
 ### 2. install requerments.txt
+ 
+- install python 3.10.3 from [here](https://www.python.org/downloads/release/python-3103/)
+
 ```bash
 >>> python -m venv venv
 >>> venv\Scripts\activate
