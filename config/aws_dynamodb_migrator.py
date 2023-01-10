@@ -7,23 +7,12 @@ def create_table():
     dynamodb = boto3.resource("dynamodb")
 
     table = dynamodb.create_table(
-        TableName = "Device_DB",
-        KeySchema = [
-            {
-                "AttributeName": "id", 
-                "KeyType": "HASH"
-            }
-        ],
+        TableName="Device_DB",
+        KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
         AttributeDefinitions=[
-            {
-                "AttributeName": "id", 
-                "AttributeType": "S"
-            },
+            {"AttributeName": "id", "AttributeType": "S"},
         ],
-        ProvisionedThroughput={
-            "ReadCapacityUnits": 5, 
-            "WriteCapacityUnits": 2
-        },
+        ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 2},
     )
     return table
 

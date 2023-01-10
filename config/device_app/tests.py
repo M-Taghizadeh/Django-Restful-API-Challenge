@@ -2,9 +2,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APISimpleTestCase
 
-
 client = APIClient()
-# client.get(), client.post(), client.put(), client.patch(), ...
+
 
 class TestGetDevice_API(APISimpleTestCase):
     """Test class for GetDevice_API endpoint view"""
@@ -31,15 +30,15 @@ class Test_CreateDevice_API(APISimpleTestCase):
         }
 
         self.payload2_invalid = {
-            "id": "", # id required field
+            "id": "",  # id required field
             "deviceModel": "/devicemodels/id2",
-            "name": "", # name required field
-            "note": "Testing a sensor2.", 
+            "name": "",  # name required field
+            "note": "Testing a sensor2.",
             # serial required field
         }
 
         self.payload3_invalid = {
-            "id": "4", # id format is invalid : must be in this format => /devices/id<pk>
+            "id": "4",  # id format is invalid : must be in this format => /devices/id<pk>
             "deviceModel": "/devicemodels/id4",
             "name": "Sensor4",
             "note": "Testing a sensor4.",
@@ -47,17 +46,27 @@ class Test_CreateDevice_API(APISimpleTestCase):
         }
 
     def test_case1_create_device_valid(self):
-        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid)
+        response = client.post(
+            "http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_case2_create_device_invalid(self):
-        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload2_invalid)
+        response = client.post(
+            "http://127.0.0.1:8000/api/v1/devices/", self.payload2_invalid
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_case3_create_device_invalid(self):
-        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload3_invalid)
+        response = client.post(
+            "http://127.0.0.1:8000/api/v1/devices/", self.payload3_invalid
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_case4_create_device_invalide(self):
-        response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid)
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT) # item already exist
+        response = client.post(
+            "http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_409_CONFLICT
+        )  # item already exist

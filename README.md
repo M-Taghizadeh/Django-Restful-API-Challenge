@@ -1,24 +1,24 @@
 # Django Restful API Challenge
 
-Implement a simple Restful API on Django using the following tech stack: Python, Django Rest Framework, AWS DynamoDB
-
+Implement a simple RESTful API app on Django using the following tech stack: Python, Django Rest Framework, and AWS DynamoDB
 
 ## Getting Started
+
 - [How to run this project?](#how-to-run-this-project)
 - [Results and Test Cases](#results-and-tests)
 - [Deploy on AWS Lambda func by zappa](#deploy-on-aws-lambda)
 
+## How to run this project
 
-# How to run this project
+### 1. Clone the repository
 
-### 1. Clone repository:
 ```bash
->>> git clone https://github.com/M-Taghizadeh/Django-Restful-API-Challenge.git
+>>> git clone https://github.com/pbarjoueian/Django-Restful-API-Challenge
 >>> cd Django-Restful-API-Challenge
 ```
 
-### 2. install requerments.txt
- 
+### 2. Install the requerments.txt
+
 - install python 3.10.3 from [here](https://www.python.org/downloads/release/python-3103/)
 
 ```bash
@@ -27,9 +27,10 @@ Implement a simple Restful API on Django using the following tech stack: Python,
 ```
 
 On Linux
+
 ```bash
-$ python -m venv venv
-$ . venv/bin/activate
+python -m venv venv
+. venv/bin/activate
 ```
 
 ```bash
@@ -37,10 +38,11 @@ $ . venv/bin/activate
 >>> pip install -r requirements.txt
 ```
 
-### 3. AWS Cli Configuration
+### 3. AWS ClI Configuration
+
 - Download AWS Cli from [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) and install it.
 
-- on aws cli terminal:
+- On aws cli terminal:
 
 ```bash
 >>> aws configure
@@ -49,29 +51,32 @@ $ . venv/bin/activate
 - Enter your IAM informations:
 
 ```bash
-$ AWS Access Key ID [None]: ENTER YOUR ACCESSKEY
-$ AWS Secret Access Key [None]: ENTER YOUR SECRETKEY
-$ Default region name [None]: ENTER YOUR REGION
-$ Default output format [None]: json
+AWS Access Key ID [None]: ENTER YOUR ACCESSKEY
+AWS Secret Access Key [None]: ENTER YOUR SECRETKEY
+Default region name [None]: ENTER YOUR REGION
+Default output format [None]: json
 ```
 
-### 4. Aws DynamoDB
+### 4. AWS DynamoDB
 
-**You can Skip this section if the table already exists in dynmaoDB**
+Note:
+**You can skip this section if the table already exists in dynmaoDB**
 
 After entering the AWS Secret variables, we can use dynamodb migrator to create our nosql database.
 
-```bash 
+```bash
 >>> python aws_dynamodb_migrator.py
 ```
 
 After this, on AWS Dynamodb, we will see our database with the name "Device_DB", you can check it.
 You can see it in the list of tables.
+
 ```bash
 >>> aws dynamodb list-tables
 ```
 
 ### 5. Enter Your secret variables
+
 - in settings.py : config/config/settings.py
 
 You can also use online tools for django secret key generator.
@@ -94,15 +99,16 @@ dynamodb = boto3.resource(
 ```
 
 ### 6. Run server and use it :)
+
 ```bash
 >>> cd .\config
 >>> python .\manage.py runserver
 ```
 
+## Results and Tests
 
-# Results and Tests
+### Results
 
-## Results
 |HTTP Method |URL                                                                  |Functionality
 |------------|---------------------------------------------------------------------|------------------
 |POST        |bjqutkwcyj.execute-api.us-east-1.amazonaws.com/dev/api/v1/devices/   |Create new Device
@@ -126,64 +132,68 @@ Body (application/json):
 }
 ```
 
-### Response 1 - Success:
+### Response 1 - Success
+
 - **HTTP 201** Created
 
 ![test](docs/POST-200.png)
 
-### Response 1 - Failure 1:
+### Response 1 - Failure 1
+
 - **HTTP 400** Bad Request
 
 If any of the payload fields are missing. Response body should have a descriptive error message for the client to be able to detect the problem.
 
 ![test](docs/POST-400.png)
 
-### Response 1 - Failure 2:
+### Response 1 - Failure 2
+
 - **HTTP 409** Conflict Error
 
 If Item was already exists with this id.
 
 ![test](docs/POST-409.png)
 
-<hr>
+---
 
-### Request 2 : Get Device 
+### Request 2 : Get Device
 
 |HTTP Method |URL                                                                  |
 |------------|---------------------------------------------------------------------|
 |GET         |bjqutkwcyj.execute-api.us-east-1.amazonaws.com/dev/api/v1/devices/id1|
 
+### Response 2 - Success
 
-### Response 2 - Success:
 - **HTTP 200** OK
 
 ![test](docs/GET-200.png)
 
-### Response 2 - Failure 1:
+### Response 2 - Failure 1
+
 - **HTTP 404** Not Found
 
 If the request id does not exist.
 
 ![test](docs/GET-404.png)
 
+---
 
-<hr>
-
-### Request 3 : Get All Devices 
+### Request 3 : Get All Devices
 
 |HTTP Method |URL                                                                  |
 |------------|---------------------------------------------------------------------|
 |GET         |bjqutkwcyj.execute-api.us-east-1.amazonaws.com/dev/api/v1/devices/all|
 
-### Response 3 - Success:
+### Response 3 - Success
+
 - **HTTP 200** OK
 
 ![test](docs/GET-ALL-200.png)
 
-
-<hr>
+---
 
 ## Automated Tests
+
 This project is completely TestCase oriented and you can add other tests in the device_app/tests.py file. the six important and key test cases requested in the challenge have been successfully passed. You can use these endpoints with API platforms like **postman** or **insomnia**. You can also run test cases with the following command.
 
 - Tests Directory
@@ -253,7 +263,7 @@ class Test_CreateDevice_API(APISimpleTestCase):
     def test_case3_create_device_invalid(self):
         response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload3_invalid)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_case4_create_device_invalide(self):
         response = client.post("http://127.0.0.1:8000/api/v1/devices/", self.payload1_valid)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT) # item already exist
@@ -278,20 +288,20 @@ Ran 6 tests in 2.456s
 OK
 ```
 
-<hr>
+---
 
-# Deploy on AWS lambda
+## Deploy on AWS lambda
 
 ### Zappa - Serverless Python
-Zappa makes it super easy to build and deploy server-less, event-driven Python applications (Django or Flask) on AWS Lambda + API Gateway + S3. 
 
-- https://github.com/zappa/Zappa
+Zappa makes it super easy to build and deploy server-less, event-driven Python applications (Django or Flask) on AWS Lambda + API Gateway + S3.
+
+- [https://github.com/zappa/Zappa](https://github.com/zappa/Zappa)
 
 We can deploy our python project on lambda and S3 buckets using zappa in the following three steps :)
 
 ```bash
-$ pip install zappa
-$ zappa init
-$ zappa deploy
+pip install zappa
+zappa init
+zappa deploy
 ```
-
